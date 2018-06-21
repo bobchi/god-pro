@@ -1,0 +1,7 @@
+<?php
+function getConfig(){
+    return file_put_contents(getcwd().'/god.json','{}') . ' of bytes is written' . PHP_EOL . 'god config is created';
+}
+function tc($p){
+    return json_encode((object)$p);
+}

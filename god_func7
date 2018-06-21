@@ -1,0 +1,36 @@
+<?php
+function getConfig($data):string
+{
+    return file_put_contents(getcwd().'/god.json',$data) . ' of bytes is written' . PHP_EOL . 'god config is created';
+}
+
+function loadConfig()
+{
+    return json_decode(file_get_contents(getcwd().'/god.json'));
+}
+
+function tc($p){
+    return new class($p){
+        function __construct($p){
+            foreach ($p as $k => $v){
+                $this->$k = $v;
+            }
+        }
+        function __toString(){
+            if(!defined('FORMAT') || FORMAT != 'JSON') return json_encode($this);
+            return 'sql';
+        }
+    };
+}
+
+    function tc2($p){
+        return (object)$p;
+    }
+
+function tc1($params){
+    $gc = new stdClass();
+    foreach ($params as $k=>$v){
+        $gc->$k = $v;
+    }
+    return $gc;
+}
