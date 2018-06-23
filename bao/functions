@@ -1,0 +1,14 @@
+<?php
+// compile by GOD 2018-06-23
+function __autoload($className){
+    $className = str_replace('\\', '/', $className) . '.php';
+    require($className);
+}
+function showAge(){
+    echo 'tutu \'s is 2.5';
+}
+function gender(){
+    echo 'baby girl';
+}function showMe(){
+    echo 'I\'m tutu\'s father';
+}

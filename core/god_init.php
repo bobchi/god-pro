@@ -29,4 +29,10 @@ class god_init{
         $config = loadConfig();
         (new god_frame($config->prj_name))->run();
     }
+
+    static function compile()
+    {
+        $config = loadConfig();
+        (new god_frame($config->prj_name))->compile();
+    }
 }
