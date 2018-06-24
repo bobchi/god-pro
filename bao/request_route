@@ -1,0 +1,15 @@
+<?php
+return array (
+  '/getme' => 
+  array (
+    'RequestMethod' => 'GET',
+    'Class' => 'index',
+    'Method' => 'defaults',
+  ),
+  '/getAge' => 
+  array (
+    'RequestMethod' => 'POST',
+    'Class' => 'index',
+    'Method' => 'abc',
+  ),
+);

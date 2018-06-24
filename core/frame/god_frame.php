@@ -1,5 +1,7 @@
 <?php
 namespace core\frame;
+use core\frame\god_mvc;
+
 class god_frame
 {
     public $project_folder = '';
@@ -51,8 +53,18 @@ class god_frame
         // generate classes file
         $classes = get_declared_classes();
         $classes = array_slice($classes, array_search(__CLASS__, $classes)+1);
-        var_export($classes);
-
+        $routerArr = [];
+        foreach ($classes as $class){
+            $mvc = new god_mvc($class);
+            if($mvc->isController())
+            {
+                $rm = $mvc->getRequestMapping();
+                $routerArr = array_merge($routerArr,$rm);
+            }
+        }
+        $routers = '<?php' . PHP_EOL
+            . 'return ' . var_export($routerArr,1) . ';';
+        file_put_contents($this->project_folder . '/request_route', $routers);
     }
 
 }

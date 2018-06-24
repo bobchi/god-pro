@@ -6,7 +6,7 @@
 class index
 {
     /**
-     *  *@RequestMapping("/getme",Method=GET);
+     * @RequestMapping("/getme",Method=GET);
      */
     function defaults(){
         echo 'hello bao';
