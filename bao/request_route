@@ -1,6 +1,6 @@
 <?php
 return array (
-  '/getme' => 
+  '/getme/\\w{2,10}' => 
   array (
     'RequestMethod' => 'GET',
     'Class' => 'index',

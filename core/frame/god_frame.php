@@ -1,6 +1,6 @@
 <?php
 namespace core\frame;
-use core\frame\god_mvc;
+//use core\frame\god_mvc;
 
 class god_frame
 {
