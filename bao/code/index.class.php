@@ -6,11 +6,11 @@
 class index
 {
     /**
-     * @RequestMapping("/getme/\w{2,10}",Method=GET);
+     * @RequestMapping("/getme/(?<name>\w{2,10})/(?<age>\d+)$",Method=GET);
      */
-    function defaults(){
-        echo 'hello bao';
-        showAge();
+    function defaults($name,$age){
+        echo 'hello, '. $name.'<hr>'.'my age is '.$age;
+//        showAge();
     }
 
     /**
