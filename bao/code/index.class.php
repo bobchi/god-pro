@@ -14,9 +14,9 @@ class index
     }
 
     /**
-     * @RequestMapping("/getAge",Method=POST);
+     * @RequestMapping("/login",Method=GET);
      */
-    function abc(){
-        echo 'abc';
+    function userLogin(){
+        echo 'login page';
     }
 }
