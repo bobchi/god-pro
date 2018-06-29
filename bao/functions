@@ -1,5 +1,5 @@
 <?php
-// compile by GOD 2018-06-26
+// compile by GOD 2018-06-28
 function __autoload($className){
     $className = str_replace('\\', '/', $className) . '.php';
     require($className);

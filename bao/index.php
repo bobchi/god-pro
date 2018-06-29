@@ -2,6 +2,15 @@
 require 'vars';
 require 'functions';
 
+function getMatch($k){
+    return preg_match('/[a-zA-Z]+/', $k);
+}
+
+$display = function($tpl = ''){
+    require 'vars';
+    if($tpl!='') include 'page/'.$tpl.'.html';
+};
+
 $path = isset($_SERVER["PATH_INFO"]) ? $_SERVER["PATH_INFO"] : false;
 !$path && exit('404');
 
@@ -31,11 +40,12 @@ foreach ($routeKeys as $routeKey)
             $classObj = new ReflectionClass($className);
             $getMethod = $classObj->getMethod($classMethod);
 
-            if($params && count($params)>0){
+            $params['display'] = $display;
+//            if($params && count($params)>0){
                 $getMethod->invokeArgs($classObj->newInstance(), $params);
-            }else{
-                $getMethod->invoke($classObj->newInstance());
-            }
+//            }else{
+//                $getMethod->invoke($classObj->newInstance());
+//            }
 //            (new $className())->$classMethod();
 //            exit();
         }
@@ -44,11 +54,6 @@ foreach ($routeKeys as $routeKey)
         }
     }
 }
-
-function getMatch($k){
-    return preg_match('/[a-zA-Z]+/', $k);
-}
-
 
 
 

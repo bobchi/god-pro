@@ -6,10 +6,10 @@ return array (
     'Class' => 'index',
     'Method' => 'defaults',
   ),
-  '/getAge' => 
+  '/login$' => 
   array (
-    'RequestMethod' => 'POST',
+    'RequestMethod' => 'GET',
     'Class' => 'index',
-    'Method' => 'abc',
+    'Method' => 'userLogin',
   ),
 );

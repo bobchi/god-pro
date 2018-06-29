@@ -14,9 +14,10 @@ class index
     }
 
     /**
-     * @RequestMapping("/login",Method=GET);
+     * @RequestMapping("/login$",Method=GET);
      */
-    function userLogin(){
-        echo 'login page';
+    function userLogin($display){
+        $display('login');
+//        echo 'login page';
     }
 }
