@@ -17,7 +17,22 @@ class index
      * @RequestMapping("/login$",Method=GET);
      */
     function userLogin($display){
-        $display('login');
+        $vars['name'] = 'yang qiu xia';
+        $vars['web'] = 'qj4.cn';
+        $display('login', $vars);
 //        echo 'login page';
     }
+
+    /**
+     * @RequestMapping("/login_post$",Method=POST);
+     */
+    function userLoginPost($uname,$display){
+        $obj = new stdClass();
+        $obj->uname = $uname;
+        exit(json_encode($obj));
+//        echo file_get_contents("php://input");
+//        echo 'post';
+    }
+
+
 }

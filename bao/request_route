@@ -12,4 +12,10 @@ return array (
     'Class' => 'index',
     'Method' => 'userLogin',
   ),
+  '/login_post$' => 
+  array (
+    'RequestMethod' => 'POST',
+    'Class' => 'index',
+    'Method' => 'userLoginPost',
+  ),
 );

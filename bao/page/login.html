@@ -2,10 +2,47 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>login</title>
 </head>
 <body>
 <?php echo 'this is tpl'; ?>
-<?php $name?>
+<form method="post" action="/login_post" id="userForm">
+<div>
+    name:<input type="text" name="uname">
+</div>
+<div>
+    password:<input type="password" name="password">
+</div>
+<button type="submit">submit</button>
+<button type="button" id="jq-btn">submit(jquery)</button>
+</form>
+<script src="/page/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#jq-btn").click(function () {
+            var jsonRes = $("#userForm").serializeArray(),
+            userData = {};
+            $.each(jsonRes,function () {
+                userData[this.name] = this.value;
+            });
+
+            // console.log(userData); return;
+            $.ajax({
+                type:'POST',
+                contentType:'application/json',
+                url:'/index.php/login_post',
+                data:JSON.stringify(userData),
+                dataType:'json',
+                success:function (res) {
+                    alert(res.uname);
+                },
+                error:function (response,  error) {
+                    alert(error);
+                }
+            });
+        });
+    });
+</script>
+
 </body>
 </html>

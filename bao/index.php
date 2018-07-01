@@ -6,10 +6,36 @@ function getMatch($k){
     return preg_match('/[a-zA-Z]+/', $k);
 }
 
-$display = function($tpl = ''){
+$display = function($tpl = '', $vars = []){
     require 'vars';
+    extract($vars);
     if($tpl!='') include 'page/'.$tpl.'.html';
 };
+
+function existParam($method,$param){
+    foreach ($method->getParameters() as $parameter){
+        if($parameter->name == $param) return true;
+    }
+    return false;
+}
+
+function poster($requestMethod, &$params, $method){
+    if($requestMethod == 'POST')
+    {
+        if($_SERVER['CONTENT_TYPE'] == 'application/json'){
+            $getObj = json_decode(file_get_contents('php://input'));
+            foreach ($getObj as $k=>$v){
+                if(existParam($method,$k))
+                    $params[$k] = $v;
+            }
+            return;
+        }
+        foreach ($_POST as $key=>$value){
+            if(existParam($method,$key))
+            $params[$key] = $value;
+        }
+    }
+}
 
 $path = isset($_SERVER["PATH_INFO"]) ? $_SERVER["PATH_INFO"] : false;
 !$path && exit('404');
@@ -39,6 +65,8 @@ foreach ($routeKeys as $routeKey)
 
             $classObj = new ReflectionClass($className);
             $getMethod = $classObj->getMethod($classMethod);
+
+            poster($_SERVER['REQUEST_METHOD'],$params, $getMethod);
 
             $params['display'] = $display;
 //            if($params && count($params)>0){
