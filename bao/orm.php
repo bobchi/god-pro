@@ -9,14 +9,21 @@ class orm
     function select(){
         $fields = func_get_args();
         foreach ($fields as $field){
-            $this->sql['select'] .= $field . ',';
+            if(trim($this->sql[__FUNCTION__]) != __FUNCTION__)
+            $this->sql[__FUNCTION__] .= ',';
+            $this->sql[__FUNCTION__] .= $field;
         }
         return $this;
     }
 
-
-    function from($tableName){
-        $this->sql['from'] .= $tableName;
+    function from(){
+        $fields = func_get_args();
+        foreach ($fields as $field){
+            if(trim($this->sql[__FUNCTION__]) != __FUNCTION__)
+                $this->sql[__FUNCTION__] .= ',';
+            $this->sql[__FUNCTION__] .= $field;
+        }
+//        $this->sql[__FUNCTION__] .= $tableName;
         return $this;
     }
 
