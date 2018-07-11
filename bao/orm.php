@@ -5,13 +5,22 @@ class orm
     public $sql = [
         'select' => 'select ',
         'from' => ['from ',[]],
-        'where' => ' where '
+        'where' => ' where ',
+        'orderby' => ' order by '
     ];
 
     function select(){
         $fields = func_get_args();
         foreach ($fields as $field){
-            $this->_add(__FUNCTION__,$field);
+            if(is_array($field))
+            {
+                $fieldKey = key($field);
+                $this->_add(__FUNCTION__,$this->_prefix($fieldKey).'.'.$field[$fieldKey]);
+            }
+            else {
+                $this->_add(__FUNCTION__,$field);
+            }
+
         }
         return $this;
     }
@@ -35,11 +44,6 @@ class orm
         }else{
             $this->_add(__FUNCTION__,$tableNames);
         }
-//        $fields = func_get_args();
-//        foreach ($fields as $field){
-//            $this->_add(__FUNCTION__,$field);
-//        }
-//        $this->sql[__FUNCTION__] .= $tableName;
         return $this;
     }
 
@@ -67,28 +71,51 @@ class orm
         }
     }
 
+
+    function _prefix($tbName)
+    {
+        return '_'.$tbName;
+    }
+
+
     function __toString(){
 //        return implode($this->sql);
-        $map = function ($items)
-        {
-          if(!is_array($items)) {return $items;}
-          else
-          {
-              $res = '';
-              foreach ($items[1] as $item)
-              {
-                  if($res != '') $res .= ',';
-                  $res .= $item.' _'.$item;
-              }
-              return $items[0] . $res;
-          }
-        };
+
 
         $ret = array_map($map, array_values($this->sql));
         return implode($ret,' ');
     }
 }
 
+$map = function ($items)
+{
+    if(!is_array($items)) {return $items;}
+    else
+    {
+        $res = '';
+        foreach ($items[1] as $item)
+        {
+            if($res != '') $res .= ',';
+            $res .= $item.' '.$this->_prefix($item);
+        }
+        return $items[0] . $res;
+    }
+};
+
 $orm = new orm();
 echo $orm->select('uid','name','age')
 ->from([['news'=>'classid'],['news_class'=>'id']]);
+
+
+
+?>
+
+
+
+<script>
+    let str = document.body.innerHTML;
+    let arrMatches = str.match(/(where)|(from)|(order)|(select)|(limit)/g);
+
+
+
+</script>
