@@ -74,13 +74,15 @@ class orm
 
     function _prefix($tbName)
     {
-        return '_'.$tbName;
-    }
+        return ' _'.$tbName;
+    } 
 
 
-    function __toString(){
+    function __toString()
+    {
 //        return implode($this->sql);
-
+        global $map;
+        $map = Closure::bind($map, $this, 'orm');
 
         $ret = array_map($map, array_values($this->sql));
         return implode($ret,' ');
@@ -96,14 +98,14 @@ $map = function ($items)
         foreach ($items[1] as $item)
         {
             if($res != '') $res .= ',';
-            $res .= $item.' '.$this->_prefix($item);
+            $res .= $item.orm::_prefix($item);
         }
         return $items[0] . $res;
     }
 };
 
 $orm = new orm();
-echo $orm->select('uid','name','age')
+echo $orm->select(['news'=>'id'],'id','name','age')
 ->from([['news'=>'classid'],['news_class'=>'id']]);
 
 
