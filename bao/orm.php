@@ -6,7 +6,10 @@ class orm
         'select' => 'select ',
         'from' => ['from ',[]],
         'where' => ' where ',
-        'orderby' => ' order by '
+        'orderby' => ' order by ',
+        'insertinto' => 'insert into ',
+        'insertfields' => '',
+        'values' => 'values'
     ];
 
     function select(){
@@ -65,10 +68,25 @@ class orm
         }
         else
         {
-            if(trim($this->sql[$key]) != $key)
+//            if(trim($this->sql[$key]) != $key)
+            if(preg_replace('/\s/','',$this->sql[$key]) != $key)
                 $this->sql[$key] .= $split;
             $this->sql[$key] .= $field;
         }
+    }
+
+    function orderby($str, $order=''){
+        $order = ' '.$order;
+        if(is_array($str))
+        {
+            $tb = key($str);
+            $this->_add(__FUNCTION__,$this->_prefix($tb).'.'.$str[$tb]);
+        }
+        else
+        {
+            $this->_add(__FUNCTION__,$str.$order);
+        }
+        return $this;
     }
 
 
@@ -83,6 +101,15 @@ class orm
 //        return implode($this->sql);
         global $map;
         $map = Closure::bind($map, $this, 'orm');
+
+        $filter = function ($value, $key){
+            if(!is_string($value)) return true;
+            if(preg_replace('/\s/','',$value) == $key)
+                return false;
+            return true;
+        };
+
+        $this->sql = array_filter($this->sql,$filter,ARRAY_FILTER_USE_BOTH);
 
         $ret = array_map($map, array_values($this->sql));
         return implode($ret,' ');
@@ -106,7 +133,7 @@ $map = function ($items)
 
 $orm = new orm();
 echo $orm->select(['news'=>'id'],'id','name','age')
-->from([['news'=>'classid'],['news_class'=>'id']]);
+->from([['news'=>'classid'],['news_class'=>'id']])->orderby('id desc');
 
 
 
@@ -115,9 +142,13 @@ echo $orm->select(['news'=>'id'],'id','name','age')
 
 
 <script>
-    let str = document.body.innerHTML;
-    let arrMatches = str.match(/(where)|(from)|(order)|(select)|(limit)/g);
+    var str = document.body.innerHTML;
+    var arrMatches = str.match(/(where)|(from)|(order\sby)|(select)|(limit)/g);
 
+    arrMatches.forEach(function (item) {
+        str = str.replace(item,"<span style='color:red'>"+ item +"</span>");
+    });
 
+document.body.innerHTML = str;
 
 </script>
