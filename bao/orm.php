@@ -56,6 +56,63 @@ class orm
         return $this;
     }
 
+    function orderby($str, $order='')
+    {
+        $order = ' '.$order;
+        if(is_array($str))
+        {
+            $tb = key($str);
+            $this->_add(__FUNCTION__,$this->_prefix($tb).'.'.$str[$tb]);
+        }
+        else
+        {
+            $this->_add(__FUNCTION__,$str.$order);
+        }
+        return $this;
+    }
+
+
+    function insert()
+    {
+        $params = func_get_args();
+        $fields = $fieldsValues = $callback = [];
+        foreach($params as $param)
+        {
+            if(is_array($param)){
+                foreach ($param as $item)
+                $field = key($item);
+                $fieldValue = $item[$field];
+                $fields[] = $field;
+                if(is_string($fieldValue)) $fieldValue = "'".$fieldValue."'";
+                $fieldsValues[] = $fieldValue;
+            }
+            $this->_add('insertfields','('.implode($fields,',').')');
+            $this->_add('values','('.implode($fieldsValues,',').')');
+
+            if(is_string($param)){
+                $this->_add('into',$param);
+            }
+            if(is_bool($param) && $param){
+                $this->db->beginTransaction();
+            }
+            if(is_callable($param)){
+                $callback[] = $param;
+            }
+        }
+
+        if(count($callback) > 0){
+            $this->exec();
+            $this->clearConfig();
+            foreach ($callback as $call){
+                $call = Closure::bind($call,$this);
+                $call();
+            }
+        }
+
+        return $this;
+
+    }
+
     function _add($key, $field, $split=',')
     {
         if(!$this->sql) return;
@@ -74,21 +131,6 @@ class orm
             $this->sql[$key] .= $field;
         }
     }
-
-    function orderby($str, $order=''){
-        $order = ' '.$order;
-        if(is_array($str))
-        {
-            $tb = key($str);
-            $this->_add(__FUNCTION__,$this->_prefix($tb).'.'.$str[$tb]);
-        }
-        else
-        {
-            $this->_add(__FUNCTION__,$str.$order);
-        }
-        return $this;
-    }
-
 
     function _prefix($tbName)
     {
@@ -132,10 +174,14 @@ $map = function ($items)
 };
 
 $orm = new orm();
-echo $orm->select(['news'=>'id'],'id','name','age')
-->from([['news'=>'classid'],['news_class'=>'id']])->orderby('id desc');
+//echo $orm->select(['news'=>'id'],'id','name','age')
+//->from([['news'=>'classid'],['news_class'=>'id']])->orderby('id desc');
 
-
+echo $orm->insert([
+        ['username'=>'lisi'],
+        ['phone'=>'133*******'],
+        ['pwd'=>md5('123')],
+],'users');
 
 ?>
 
