@@ -113,6 +113,18 @@ class orm
 
     }
 
+    public $sql_bak = [];
+    public $db = false;
+    public $errCode = '';
+    function clearConfig(){
+        $this->sql = $this->sql_bak;
+    }
+    function __construct(){
+        $this->sql_bak = $this->sql;
+        $this->db = new PDO("mysql:host=127.0.0.1;dbname=god_orm","root",'root');
+    }
+
+
     function _add($key, $field, $split=',')
     {
         if(!$this->sql) return;
@@ -145,9 +157,12 @@ class orm
         $map = Closure::bind($map, $this, 'orm');
 
         $filter = function ($value, $key){
-            if(!is_string($value)) return true;
-            if(preg_replace('/\s/','',$value) == $key)
+//            if(!is_string($value)) return true;
+            if(is_array($value)){
+                if(count($value[1]) > 0) return true;
                 return false;
+            }
+            if(preg_replace('/\s/','',$value) == $key || preg_replace('/\s/','',$value) == '') return false;
             return true;
         };
 
