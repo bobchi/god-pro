@@ -116,9 +116,11 @@ class orm
     public $sql_bak = [];
     public $db = false;
     public $errCode = '';
+
     function clearConfig(){
         $this->sql = $this->sql_bak;
     }
+
     function __construct(){
         $this->sql_bak = $this->sql;
         $this->db = new PDO("mysql:host=127.0.0.1;dbname=god_orm","root",'root');
@@ -149,6 +151,32 @@ class orm
         return ' _'.$tbName;
     } 
 
+    function exec(){
+        $sql = strval($this);
+        $prepare = $this->db->prepare($sql);
+        if(!$prepare->execute()){
+            if($this->db->inTransaction()){
+                $this->db->rollback();
+            }
+            $this->errCode = $prepare->errorCode();
+            echo 'run sql fail, the error code is'.$this->errCode.', the error info: '.$prepare->errorInfo()[2];
+        }
+        return $this;
+    }
+
+    function getLastInsertID(){
+        return $this->db->lastInsertId();
+    }
+
+    function getAll(){
+        return $this->db->fetchAll();
+    }
+
+    function commit(){
+        if($this->db->inTransaction()){
+            $this->db->commit();
+        }
+    }
 
     function __toString()
     {
