@@ -224,7 +224,14 @@ echo $orm->insert([
         ['username'=>'lisi'],
         ['phone'=>'133*******'],
         ['pwd'=>md5('123')],
-],'users');
+],'users',function(){
+    if($this->errCode == ''){
+        $this->commit();
+        echo 'success';
+    }else{
+        echo 'users insert sql fail';
+    }
+});
 
 ?>
 
